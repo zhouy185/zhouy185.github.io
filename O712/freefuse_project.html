@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreeFuse Project – Interactive Video Pathways</title>
+<style>
+  :root{
+    --bg:#f7f9fc; --card:#ffffff; --ink:#1f2a37; --muted:#52667a; --line:#e6edf5; --accent:#2f6fec;
+  }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Inter,Roboto,Helvetica,Arial;}
+  .wrap{max-width:860px;margin:28px auto;padding:0 16px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 18px rgba(20,40,80,.06);padding:18px 18px;}
+  h1{font-size:22px;margin:0 0 6px 0;display:flex;gap:10px;align-items:center}
+  .sub{color:var(--muted);margin:0 0 14px 0;font-size:13px}
+  h2{font-size:16px;margin:12px 0 6px 0;display:flex;gap:8px;align-items:center}
+  p{margin:6px 0}
+  ul,ol{margin:6px 0 8px 18px}
+  li{margin:4px 0}
+  .section{padding:10px 0;border-top:1px solid var(--line)}
+  .section:first-of-type{border-top:0}
+  .chip{display:inline-block;font-size:12px;color:#0f3bda;background:#e8f0ff;border:1px solid #d7e6ff;border-radius:999px;padding:3px 8px;margin-right:6px}
+  .blurb{background:#f1f6ff;border:1px dashed #cfe0ff;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:14px}
+  .footer{color:var(--muted);font-size:12px;margin-top:10px}
+  .icon{font-size:18px}
+  .list-compact li{margin:2px 0}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1><span class="icon">📌</span>FreeFuse Project – Interactive Video Pathways</h1>
+      <p class="sub">Student-facing overview (compact)</p>
+
+      <div class="section">
+        <h2><span class="icon">🏢</span>Business Context</h2>
+        <p>FreeFuse produces interactive, “choose‑your‑own‑adventure” videos where viewers follow branching <em>paths</em>. The company’s proprietary engagement metric, <strong>Path&nbsp;IQ</strong>, aims to link viewing behavior to real outcomes (retention, conversions, learning).</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="icon">🧾</span>The Data</h2>
+        <p class="list-compact">
+          <span class="chip">Anonymized user IDs</span>
+          <span class="chip">Node/segment titles</span>
+          <span class="chip">Timestamps</span>
+          <span class="chip">Watch duration</span>
+          <span class="chip">Branch choices</span>
+          <span class="chip">Questionnaire flags</span>
+        </p>
+        <p>These fields let you reconstruct journeys, measure completions/drop‑offs, and analyze decision patterns.</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="icon">🎯</span>Project Goals (via data analysis)</h2>
+        <ol class="list-compact">
+          <li><strong>Validate Path&nbsp;IQ</strong> → Does it correlate with engagement &amp; positive outcomes?</li>
+          <li><strong>Quantify impact</strong> → How large is the lift/ROI from Path&nbsp;IQ &amp; pathway features?</li>
+          <li><strong>Guide resourcing</strong> → Should content/resources follow observed viewing behavior?</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="icon">🧑‍💻</span>Student Opportunities</h2>
+        <ul class="list-compact">
+          <li><strong>Data analysis &amp; modeling</strong> of user‑journey data (EDA, visualization, prediction) in Python.</li>
+          <li><strong>Metric → business value</strong>: turn findings into clear recommendations.</li>
+          <li><strong>GenAI &amp; design exposure</strong>: FreeFuse may demo generative‑AI ideation and Builder.io skills.</li>
+          <li><strong>Partner collaboration</strong>: weekly ~30‑min check‑ins; de‑identified data.</li>
+        </ul>
+        <div class="blurb"><strong>Form blurb:</strong> Analyze viewer‑journey data to validate <em>Path&nbsp;IQ</em>, estimate its impact on outcomes, and explore resource allocation based on behavior. Optional exposure to GenAI/Builder.io.</div>
+      </div>
+
+      <p class="footer">Questions welcome. This overview is intentionally compact—details will be discussed at kickoff.</p>
+    </div>
+  </div>
+</body>
+</html>
