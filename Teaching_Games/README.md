@@ -36,9 +36,3 @@ An interactive educational visualization tool for teaching and learning the **Cr
 - A modern web browser (Chrome, Firefox, Safari, or Edge)
 - No build tools or dependencies required!
 
-### Installation
-
-1. Clone or download the repository:
-```bash
-git clone https://github.com/zhouy185/zhouy185.github.io.git
-cd zhouy185.github.io/Teaching_Games
