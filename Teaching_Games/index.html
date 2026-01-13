@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CPM Fluid Simulation Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <h1>Critical Path Method – Fluid Simulation</h1>
+
+  <!-- SVG Canvas where all nodes + edges are drawn -->
+  <svg id="cpmCanvas"></svg>
+
+  <!-- All controls below -->
+  <div id="controls">
+    <button id="btn-start-sim">Start the forward pass</button>
+    <button id="btn-start-backward" style="display: none;">Start the backward pass</button>
+    <button id="btn-pause-resume" style="display: none;">Pause</button>
+    <button id="btn-reset">Reset</button>
+    <button id="btn-show-critical" style="display: none;">Show critical activities</button>
+    <span id="time-display">Project Time: 0.0 / 0</span>
+    <label>Speed: <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" style="width: 120px;" />
+      <span id="speed-label">1.0x</span>
+    </label>
+  </div>
+
+  <div id="node-controls">
+    <h3>Add Node</h3>
+    <div style="display: grid; grid-template-columns: auto auto auto auto; gap: 12px; align-items: center;">
+      <label>ID: <input type="text" id="input-node-id" placeholder="E" style="width: 60px;" /></label>
+      <label>Duration: <input type="number" id="input-duration" value="3" min="1" style="width: 60px;" /></label>
+      <label>Predecessors: <input type="text" id="input-predecessors" placeholder="A,B" style="width: 80px;" /></label>
+      <button id="btn-add-node">Add Node</button>
+    </div>
+    <div style="margin-top: 10px; display: flex; gap: 12px; align-items: center;">
+      <label>Batch count: <input type="number" id="input-batch-count" value="3" min="1" style="width: 50px;" /></label>
+      <button id="btn-add-batch">Add batch (duration 1)</button>
+      <button id="btn-add-start-end">Add Start/End Nodes</button>
+    </div>
+    <p class="hint">Drag nodes to reposition • Double-click to edit duration</p>
+  </div>
+
+  <!-- Context menu for edge creation -->
+  <div id="context-menu">
+    <button id="btn-add-successor">Add an existing successor…</button>
+    <button id="btn-add-new-successor">Add new successor node…</button>
+    <button id="btn-add-predecessor">Add a predecessor…</button>
+    <button id="btn-edit-duration">Edit duration…</button>
+    <button id="btn-delete-node">Delete node</button>
+  </div>
+
+  <!-- Script placed at bottom so DOM is loaded first -->
+  <script src="script.js"></script>
+</body>
+</html>
