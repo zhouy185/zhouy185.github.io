@@ -36,3 +36,6 @@ An interactive educational visualization tool for teaching and learning the **Cr
 - A modern web browser (Chrome, Firefox, Safari, or Edge)
 - No build tools or dependencies required!
 
+### How to Use
+- Enter https://zhouy185.github.io/CPM_Demo/ in your browser
+
