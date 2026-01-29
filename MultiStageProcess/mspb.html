@@ -43,7 +43,7 @@
         </div>
 
         <div class="status-panel">
-            Current Cycle Time: <span style="color:#c0392b">3.0s</span> (Determined by Bottleneck)
+             Process Time: <span style="color:#c0392b">3.0s</span> (Determined by Bottleneck)
         </div>
 
         <div class="legend">
@@ -234,7 +234,7 @@ function draw() {
 
     ctx.fillStyle = "#555";
     ctx.font = "12px Arial";
-    ctx.fillText("Machine Cycle Timer (3.0s)", canvas.width/2, barY + 25);
+    ctx.fillText("Synchronize Timer (3.0s)", canvas.width/2, barY + 25);
 
     if (isPaused) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
