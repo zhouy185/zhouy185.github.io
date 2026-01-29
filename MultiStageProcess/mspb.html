@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Machine Paced - Full Start</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; user-select: none; }
+        
+        .main-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; }
+        canvas { background: #ffffff; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 4px; }
+        
+        .controls { 
+            display: flex; gap: 20px; align-items: center; 
+            background: #e8eaf6; padding: 15px 25px; border-radius: 8px; border: 1px solid #c5cae9;
+        }
+
+        button {
+            padding: 8px 20px; font-size: 14px; font-weight: bold; cursor: pointer;
+            color: white; border: none; border-radius: 4px; transition: background 0.2s;
+        }
+        #toggleBtn { background-color: #34495e; min-width: 80px; }
+        #toggleBtn:hover { background-color: #2c3e50; }
+        #toggleBtn.paused { background-color: #27ae60; } 
+        #resetBtn { background-color: #c0392b; }
+        #resetBtn:hover { background-color: #a93226; }
+
+        .status-panel { font-weight: bold; color: #333; margin-top: 5px; }
+
+        .legend { display: flex; gap: 20px; font-size: 13px; color: #444; margin-top: 5px;}
+        .legend span { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h3>Machine-Paced System (Synchronous)</h3>
+        
+        <canvas id="simCanvas" width="850" height="320"></canvas>
+
+        <div class="controls">
+            <button id="toggleBtn">Pause</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+
+        <div class="status-panel">
+            Current Cycle Time: <span style="color:#c0392b">3.0s</span> (Determined by Bottleneck)
+        </div>
+
+        <div class="legend">
+            <span><span class="dot" style="background:gold; border:1px solid #333"></span> Processing</span>
+            <span><span class="dot" style="background:#2ecc71; border:1px solid #333"></span> Done (Blocked)</span>
+            <span><span class="dot" style="background:#d32f2f; border:1px solid #333"></span> Bottleneck (Busy)</span>
+        </div>
+    </div>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const toggleBtn = document.getElementById('toggleBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+// --- SETTINGS ---
+const STAGE_X = [150, 425, 700];
+const STAGE_Y = 100;
+const BASKET_X = 800;
+const STAGE_TIMES = [1000, 3000, 1000]; 
+const CYCLE_DURATION = 3000; 
+
+// --- CLASSES ---
+class Unit {
+    constructor() {
+        this.color = 'gold';
+        this.id = Math.random();
+        this.moveOffsetX = 0; 
+    }
+}
+
+// --- STATE ---
+let isPaused = false;
+let state = 'PROCESSING'; 
+let cycleTimer = 0; 
+let moveTimer = 0;  
+let finishedCount = 0;
+
+// INITIALIZE WITH UNITS (Full Start)
+let slots = [new Unit(), new Unit(), new Unit()]; 
+
+// --- CONTROLS ---
+toggleBtn.onclick = () => {
+    isPaused = !isPaused;
+    toggleBtn.innerText = isPaused ? "Resume" : "Pause";
+    toggleBtn.className = isPaused ? "paused" : "";
+};
+
+resetBtn.onclick = () => {
+    // Reset to full capacity
+    slots = [new Unit(), new Unit(), new Unit()];
+    cycleTimer = 0;
+    moveTimer = 0;
+    finishedCount = 0;
+    state = 'PROCESSING';
+    draw(); 
+};
+
+// --- LOGIC ---
+function update(dt) {
+    if (state === 'PROCESSING') {
+        cycleTimer += dt;
+
+        // If for some reason Stage 1 becomes empty (edge case), fill it
+        if (slots[0] === null) {
+            slots[0] = new Unit();
+        }
+
+        if (cycleTimer >= CYCLE_DURATION) {
+            state = 'MOVING';
+            moveTimer = 0;
+            cycleTimer = CYCLE_DURATION; 
+        }
+    } 
+    else if (state === 'MOVING') {
+        moveTimer += dt;
+        
+        if (moveTimer >= 1000) {
+            // 1. Output
+            if (slots[2]) finishedCount++;
+            
+            // 2. Shift
+            slots[2] = slots[1];
+            slots[1] = slots[0];
+            slots[0] = new Unit(); // Always feed new input
+            
+            // 3. Reset
+            state = 'PROCESSING';
+            cycleTimer = 0;
+            slots.forEach(u => { if(u) u.moveOffsetX = 0; });
+        }
+    }
+}
+
+// --- DRAWING ---
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Belt
+    ctx.fillStyle = "#e0e0e0";
+    ctx.fillRect(50, STAGE_Y - 10, 750, 20);
+    ctx.strokeStyle = "#999";
+    ctx.strokeRect(50, STAGE_Y - 10, 750, 20);
+
+    // Output Basket
+    ctx.fillStyle = "#333";
+    ctx.textAlign = "center";
+    ctx.font = "16px Arial";
+    ctx.fillText("Output: " + finishedCount, BASKET_X, STAGE_Y - 40);
+    ctx.strokeRect(BASKET_X - 30, STAGE_Y - 20, 60, 50);
+
+    // Draw Stages
+    for (let i = 0; i < 3; i++) {
+        let x = STAGE_X[i];
+        const isStageDone = cycleTimer >= STAGE_TIMES[i];
+        
+        ctx.beginPath();
+        ctx.moveTo(x, STAGE_Y - 60);
+        ctx.lineTo(x, STAGE_Y + 60);
+        ctx.lineWidth = 4;
+        
+        if (state === 'PROCESSING') {
+            ctx.strokeStyle = isStageDone ? "#2ecc71" : "#d32f2f"; 
+        } else {
+            ctx.strokeStyle = "#000"; 
+        }
+        ctx.stroke();
+
+        ctx.fillStyle = "#333";
+        ctx.font = "bold 14px Arial";
+        let label = `Stage ${i+1} (${STAGE_TIMES[i]/1000}s)`;
+        ctx.fillText(label, x, STAGE_Y - 70);
+    }
+
+    // Draw Units
+    for (let i = 0; i < 3; i++) {
+        let u = slots[i];
+        if (!u) continue;
+
+        let cx = STAGE_X[i];
+        let cy = STAGE_Y;
+
+        if (state === 'MOVING') {
+            let progress = moveTimer / 1000; 
+            let ease = progress < .5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+            let targetX = (i === 2) ? BASKET_X : STAGE_X[i+1];
+            cx += (targetX - cx) * ease;
+        }
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+        
+        if (state === 'MOVING') {
+            ctx.fillStyle = "#3498db"; 
+        } else {
+            if (cycleTimer >= STAGE_TIMES[i]) {
+                ctx.fillStyle = "#2ecc71"; // Done/Waiting
+            } else {
+                ctx.fillStyle = "gold"; // Working
+            }
+        }
+        
+        ctx.fill();
+        ctx.strokeStyle = "#222";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Label "Waiting"
+        if (state === 'PROCESSING' && cycleTimer >= STAGE_TIMES[i] && i !== 1) {
+            ctx.fillStyle = "#333";
+            ctx.font = "10px Arial";
+            ctx.fillText("WAITING", cx, cy + 25);
+        }
+    }
+
+    // Progress Bar
+    const barW = 600;
+    const barH = 10;
+    const barX = (canvas.width - barW) / 2;
+    const barY = 250;
+
+    ctx.fillStyle = "#ddd";
+    ctx.fillRect(barX, barY, barW, barH);
+    
+    let pct = Math.min(cycleTimer / CYCLE_DURATION, 1);
+    ctx.fillStyle = "#d35400";
+    ctx.fillRect(barX, barY, barW * pct, barH);
+
+    ctx.fillStyle = "#555";
+    ctx.font = "12px Arial";
+    ctx.fillText("Machine Cycle Timer (3.0s)", canvas.width/2, barY + 25);
+
+    if (isPaused) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#333";
+        ctx.font = "bold 24px Arial";
+        ctx.fillText("PAUSED", canvas.width/2, canvas.height/2);
+    }
+}
+
+function loop() {
+    if (!isPaused) {
+        update(16);
+    }
+    draw();
+    requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
